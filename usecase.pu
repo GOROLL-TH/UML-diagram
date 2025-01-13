@@ -1,0 +1,168 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+' Actor definitions
+actor "Admin" as admin
+actor "User" as user
+actor "New User" as newuser
+actor "Old User" as olduser
+
+' Inheritance relationships
+user <|-- newuser
+user <|-- olduser
+
+rectangle "Login System" #LightBlue {
+    usecase "Register Account" as UC1
+    usecase "Fill Personal Information\n(Name, Wheelchair Type)" as UC2
+    usecase "Verify Email Address" as UC3
+    usecase "Login to System" as UC4
+    usecase "Reset Password via Email" as UC5
+    usecase "Validate Credentials" as UC6
+
+    ' Login system relationships
+    newuser --> UC1 : "Initiates"
+    olduser --> UC4 : "Authenticates"
+    olduser --> UC5 : "Requests Reset"
+    
+    UC1 ..> UC2 : <<include>>
+    UC1 ..> UC3 : <<include>>
+    UC4 ..> UC6 : <<include>>
+    UC5 ..> UC3 : <<include>>
+}
+
+rectangle "Profile & Account Management System" #PaleGreen {
+    usecase "Edit Profile Information" as UC7
+    usecase "Update Profile Picture" as UC8
+    usecase "Manage Personal Data" as UC9
+    usecase "View Profile" as UC10
+    usecase "Manage User Accounts" as UC11
+
+    ' Profile system relationships
+    olduser --> UC7 : "Updates Info"
+    olduser --> UC8 : "Uploads Picture"
+    olduser --> UC9 : "Manages Data"
+    olduser --> UC10 : "Views Data"
+    admin --> UC11 : "Administers Accounts"
+
+    ' All profile actions require login
+    UC7 ..> UC4 : <<include>>
+    UC8 ..> UC4 : <<include>>
+    UC9 ..> UC4 : <<include>>
+    UC10 ..> UC4 : <<include>>
+    UC11 ..> UC6 : <<include>>
+}
+
+rectangle "Accessibility Navigation System" #LightYellow {
+    usecase "View Accessible Map" as UC12
+    usecase "Search for Locations" as UC13
+    usecase "Show Accessible Routes\n(Green, Yellow, Red)" as UC14
+    usecase "Show Wheelchair-Friendly Locations" as UC15
+    usecase "Show Obstacles on Map" as UC16
+    usecase "View Current Location" as UC17
+    usecase "Dynamic Position Updates" as UC18
+    usecase "Zoom Map In/Out" as UC19
+    usecase "SOS Emergency Button" as UC20
+
+    ' Accessibility navigation relationships
+    olduser --> UC12 : "Access Map"
+    olduser --> UC13 : "Search Locations"
+    olduser --> UC15 : "View Locations"
+    olduser --> UC16 : "View Obstacles"
+    olduser --> UC17 : "Locate Self"
+    olduser --> UC19 : "Zoom Map"
+    olduser --> UC20 : "Use SOS"
+
+    UC12 ..> UC14 : <<include>>
+    UC12 ..> UC15 : <<include>>
+    UC12 ..> UC16 : <<include>>
+    UC12 ..> UC17 : <<include>>
+    UC17 ..> UC18 : <<include>>
+}
+
+rectangle "Route Recording System" #LightGray {
+    usecase "Record Route in Real-Time" as UC21
+    usecase "Pause Route Recording" as UC22
+    usecase "Stop and Save Route" as UC23
+    usecase "Save Route to Database" as UC24
+    usecase "View Saved Routes" as UC29
+
+    ' Route recording relationships
+    olduser --> UC21 : "Starts Recording"
+    olduser --> UC22 : "Pauses Recording"
+    olduser --> UC23 : "Stops Recording"
+    olduser --> UC29 : "Views Routes"
+    UC23 ..> UC24 : <<include>>
+    UC21 ..> UC22 : <<include>>
+    UC21 ..> UC23 : <<include>>
+}
+
+rectangle "Obstacle Reporting System" #LightPink {
+    usecase "Report New Obstacles" as UC25
+    usecase "Upload Photos and Descriptions" as UC26
+    usecase "Aggregate and Validate Data" as UC27
+    usecase "Update Map with Validated Data" as UC28
+
+    ' Obstacle reporting relationships
+    olduser --> UC25 : "Reports Obstacle"
+    UC25 ..> UC26 : <<include>>
+    UC25 ..> UC27 : <<include>>
+    UC27 ..> UC28 : <<include>>
+    UC28 ..> UC16 : "Update Obstacles on Map"
+}
+
+rectangle "Community System" #Thistle {
+    ' Main content creation
+    usecase "Create Community Content" as UC30
+    usecase "Upload Media\n(Photos/Videos)" as UC30_1
+    usecase "Add Description" as UC30_2
+    
+    ' User interactions
+    usecase "Interact with Posts" as UC31
+    usecase "Comment on Posts" as UC32
+    usecase "Share Posts" as UC33
+    
+    ' Admin features
+    usecase "Moderate Community Content" as UC34
+    usecase "Review Reported Content" as UC34_1
+    usecase "Take Moderation Action" as UC34_2
+
+    ' Content creation relationships
+    olduser --> UC30 : "Creates Post"
+    UC30 ..> UC30_1 : <<include>>
+    UC30 ..> UC30_2 : <<include>>
+    
+    ' User interaction relationships
+    olduser --> UC31 : "Interacts"
+    olduser --> UC32 : "Comments"
+    olduser --> UC33 : "Shares"
+    UC31 ..> UC32 : <<extend>>
+    
+    ' Moderation relationships
+    admin --> UC34 : "Moderates"
+    UC34 ..> UC34_1 : <<include>>
+    UC34 ..> UC34_2 : <<include>>
+}
+
+note bottom of UC30
+  Content Creation includes:
+  - Photo/video uploads
+  - Text descriptions
+  - Location tagging
+end note
+
+note right of UC31
+  User Interactions:
+  - Like/React to posts
+  - Comment on content
+  - Share to external platforms
+end note
+
+note bottom of UC34
+  Moderation includes:
+  - Content review
+  - Warning/removal actions
+  - User reports handling
+end note
+
+@enduml
