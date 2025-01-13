@@ -37,6 +37,8 @@ rectangle "Profile & Account Management System" #PaleGreen {
     usecase "Manage Personal Data" as UC9
     usecase "View Profile" as UC10
     usecase "Manage User Accounts" as UC11
+    usecase "Update User Account Information" as UC11_1
+    usecase "Suspend User Accounts" as UC11_2
 
     ' Profile system relationships
     olduser --> UC7 : "Updates Info"
@@ -44,6 +46,8 @@ rectangle "Profile & Account Management System" #PaleGreen {
     olduser --> UC9 : "Manages Data"
     olduser --> UC10 : "Views Data"
     admin --> UC11 : "Administers Accounts"
+    admin --> UC11_1 : "Updates Account Info"
+    admin --> UC11_2 : "Suspends Accounts"
 
     ' All profile actions require login
     UC7 ..> UC4 : <<include>>
@@ -51,6 +55,8 @@ rectangle "Profile & Account Management System" #PaleGreen {
     UC9 ..> UC4 : <<include>>
     UC10 ..> UC4 : <<include>>
     UC11 ..> UC6 : <<include>>
+    UC11_1 ..> UC6 : <<include>>
+    UC11_2 ..> UC6 : <<include>>
 }
 
 rectangle "Accessibility Navigation System" #LightYellow {
@@ -64,6 +70,11 @@ rectangle "Accessibility Navigation System" #LightYellow {
     usecase "Zoom Map In/Out" as UC19
     usecase "SOS Emergency Button" as UC20
 
+    ' Admin-specific actions
+    usecase "Update/Remove Inaccurate Data" as UC21_1
+    usecase "Validate New Routes/Locations" as UC21_2
+    usecase "Manage Map Metadata" as UC21_3
+
     ' Accessibility navigation relationships
     olduser --> UC12 : "Access Map"
     olduser --> UC13 : "Search Locations"
@@ -73,6 +84,10 @@ rectangle "Accessibility Navigation System" #LightYellow {
     olduser --> UC19 : "Zoom Map"
     olduser --> UC20 : "Use SOS"
 
+    admin --> UC21_1 : "Updates or Removes Data"
+    admin --> UC21_2 : "Validates Routes/Locations"
+    admin --> UC21_3 : "Manages Metadata"
+
     UC12 ..> UC14 : <<include>>
     UC12 ..> UC15 : <<include>>
     UC12 ..> UC16 : <<include>>
@@ -80,36 +95,53 @@ rectangle "Accessibility Navigation System" #LightYellow {
     UC17 ..> UC18 : <<include>>
 }
 
+
 rectangle "Route Recording System" #LightGray {
     usecase "Record Route in Real-Time" as UC21
     usecase "Pause Route Recording" as UC22
     usecase "Stop and Save Route" as UC23
     usecase "Save Route to Database" as UC24
     usecase "View Saved Routes" as UC29
+    usecase "Review and Approve Route Data" as UC29_1
+    usecase "Delete Invalid/Duplicate Routes" as UC29_2
 
     ' Route recording relationships
     olduser --> UC21 : "Starts Recording"
     olduser --> UC22 : "Pauses Recording"
     olduser --> UC23 : "Stops Recording"
     olduser --> UC29 : "Views Routes"
+    admin --> UC29_1 : "Reviews and Approves"
+    admin --> UC29_2 : "Deletes Records"
+    
+    ' Define relationship between review and delete
+    UC29_1 ..> UC29_2 : <<extend>>
+
     UC23 ..> UC24 : <<include>>
     UC21 ..> UC22 : <<include>>
     UC21 ..> UC23 : <<include>>
 }
+
+
 
 rectangle "Obstacle Reporting System" #LightPink {
     usecase "Report New Obstacles" as UC25
     usecase "Upload Photos and Descriptions" as UC26
     usecase "Aggregate and Validate Data" as UC27
     usecase "Update Map with Validated Data" as UC28
+    usecase "Add Obstacle Reports" as UC28_1
+    usecase "Edit/Delete Incorrect Obstacle Reports" as UC28_2
 
     ' Obstacle reporting relationships
     olduser --> UC25 : "Reports Obstacle"
+    admin --> UC28_1 : "Adds Reports"
+    admin --> UC28_2 : "Edits or Deletes Reports"
     UC25 ..> UC26 : <<include>>
     UC25 ..> UC27 : <<include>>
     UC27 ..> UC28 : <<include>>
+    UC28_2 ..> UC28 : <<extend>>
     UC28 ..> UC16 : "Update Obstacles on Map"
 }
+
 
 rectangle "Community System" #Thistle {
     ' Main content creation
