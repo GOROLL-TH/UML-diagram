@@ -19,17 +19,21 @@ rectangle "Login System" #LightBlue {
     usecase "Login to System" as UC4
     usecase "Reset Password via Email" as UC5
     usecase "Validate Credentials" as UC6
+    usecase "Logout from System" as UC6_1
 
     ' Login system relationships
     newuser --> UC1 : "Initiates"
     olduser --> UC4 : "Authenticates"
     olduser --> UC5 : "Requests Reset"
-    
+    olduser --> UC6_1 : "Logs Out"
+
     UC1 ..> UC2 : <<include>>
     UC1 ..> UC3 : <<include>>
     UC4 ..> UC6 : <<include>>
     UC5 ..> UC3 : <<include>>
+    UC6_1 ..> UC4 : <<include>>
 }
+
 
 rectangle "Profile & Account Management System" #PaleGreen {
     usecase "Edit Profile Information" as UC7
@@ -153,28 +157,33 @@ rectangle "Community System" #Thistle {
     usecase "Interact with Posts" as UC31
     usecase "Comment on Posts" as UC32
     usecase "Share Posts" as UC33
-    
+    usecase "Delete Own Posts" as UC33_1
+
     ' Admin features
     usecase "Moderate Community Content" as UC34
     usecase "Review Reported Content" as UC34_1
     usecase "Take Moderation Action" as UC34_2
+    usecase "Delete Violating Posts/Images/Videos" as UC34_3
 
     ' Content creation relationships
     olduser --> UC30 : "Creates Post"
     UC30 ..> UC30_1 : <<include>>
     UC30 ..> UC30_2 : <<include>>
-    
+
     ' User interaction relationships
     olduser --> UC31 : "Interacts"
     olduser --> UC32 : "Comments"
     olduser --> UC33 : "Shares"
+    olduser --> UC33_1 : "Deletes Their Posts"
     UC31 ..> UC32 : <<extend>>
     
     ' Moderation relationships
     admin --> UC34 : "Moderates"
     UC34 ..> UC34_1 : <<include>>
     UC34 ..> UC34_2 : <<include>>
+    admin --> UC34_3 : "Deletes Violating Content"
 }
+
 
 note bottom of UC30
   Content Creation includes:
